@@ -15,17 +15,17 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "dedoc/scramble": "^0.12.18",
         "fakerphp/faker": "^1.23",
+        "laravel/horizon": "^5.31",
+        "laravel/octane": "^2.9",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3",
-        "dedoc/scramble": "^0.12.18",
-        "laravel/horizon": "^5.31",
-        "laravel/octane": "^2.9",
-        "nunomaduro/essentials": "@dev"
+        "nunomaduro/essentials": "@dev",
+        "pestphp/pest": "^4.1"
     },
     "autoload": {
         "psr-4": {
