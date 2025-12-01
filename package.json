@@ -12,7 +12,9 @@
         "@vitejs/plugin-vue": "^6.0.2",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
+        "laravel-echo": "^2.2.6",
         "laravel-vite-plugin": "^2.0.0",
+        "pusher-js": "^8.4.0",
         "tailwindcss": "^4.0.0",
         "typescript": "^5.9.3",
         "vite": "^7.0.7",
@@ -26,6 +28,7 @@
         "@huggydigital/hk-text": "^1.1.0",
         "@huggydigital/hk-toast": "^1.1.2",
         "@huggydigital/huggy-datepicker": "^2.0.15",
+        "@laravel/echo-vue": "^2.2.6",
         "chokidar": "^4.0.3",
         "vue-router": "^4.6.3"
     }

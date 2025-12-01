@@ -14,6 +14,25 @@
 <script lang="ts" setup>
 import Sidebar from "./components/Sidebar.vue";
 import Navbar from "./components/Navbar.vue";
+import * as Toast from '@huggydigital/hk-toast'
+
+import { useEchoPublic } from '@laravel/echo-vue';
+
+useEchoPublic(
+    'company.1.user.1.reminders',
+    '.reminder.notify',
+    (e) => {
+        Toast.show({
+            title: 'Atenção!',
+            description: e.title + ' acontecerá em ' + e.scheduled_at,
+            canUndo: false,
+            variant: 'success',
+            closable: false,
+            hideIcon: true,
+            vertical: 'top',
+        })
+    },
+);
 </script>
 
 <style scoped>

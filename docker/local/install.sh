@@ -59,10 +59,10 @@ docker compose exec -t laravel composer install
 docker compose exec -t laravel npm install
 docker compose exec -t laravel npm install typescript
 docker compose exec -t laravel php artisan key:generate
-docker compose exec -it laravel php artisan migrate
-docker compose exec -it laravel npm i chokidar
-docker compose exec -it laravel php artisan storage:link
-docker compose exec -t laravel npm run dev
+docker compose exec -t laravel php artisan migrate
+docker compose exec -t laravel npm i chokidar
+docker compose exec -t laravel php artisan storage:link
+docker compose exec laravel npm run dev
 docker compose restart laravel
 
 echo "Started!"
