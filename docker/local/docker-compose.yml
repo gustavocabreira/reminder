@@ -43,6 +43,15 @@ services:
             - 'mysql-data:/var/lib/mysql'
         networks:
             - internal
+    mailhog:
+        container_name: ${APP_NAME}-mailhog
+        image: mailhog/mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - internal
+        command: -invite-jim=1
 networks:
     internal:
 
