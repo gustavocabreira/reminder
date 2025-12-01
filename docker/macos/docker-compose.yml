@@ -1,0 +1,81 @@
+services:
+    laravel:
+        platform: linux/x86_64
+        container_name: ${APP_NAME}-laravel
+        ports:
+            - 9051:9051
+        build:
+            context: .
+            args:
+                - USER_ID=${USER_ID:-1000}
+                - GROUP_ID=${GROUP_ID:-1000}
+        volumes:
+            - ../../:/var/www
+            - 'laravel_storage:/var/www/storage'
+            - '/home/${HOST_USER}/.ssh:/home/laravel/.ssh'
+            - ./supervisor.conf:/etc/supervisor.conf
+        networks:
+            - internal
+            - spa
+    redis:
+        container_name: ${APP_NAME}-redis
+        image: redis:latest
+        ports:
+            - 6379:6379
+        networks:
+            - internal
+        env_file:
+            - ./.env
+        volumes:
+            - redis-data:/data
+    mysql:
+        container_name: ${APP_NAME}-mysql
+        image: mysql:8.4.0
+        ports:
+            - 3306:3306
+        env_file:
+            - ./.env
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: 'laravel'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'mysql-data:/var/lib/mysql'
+        networks:
+            - internal
+    meilisearch:
+        container_name: ${APP_NAME}-meilisearch
+        image: getmeili/meilisearch
+        volumes:
+            - meili-data:/meili_data
+        ports:
+            - 7700:7700
+        environment:
+            - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+        networks:
+            - internal
+    mailhog:
+        container_name: ${APP_NAME}-mailhog
+        image: mailhog/mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - internal
+        command: -invite-jim=1
+networks:
+    internal:
+        external: true
+    spa:
+        external: true
+
+volumes:
+    redis-data:
+        name: ${APP_NAME}-redis-data
+    mysql-data:
+        name: ${APP_NAME}-mysql-db
+    laravel_storage:
+        name: ${APP_NAME}-laravel_storage
+    meili-data:
+        name: ${APP_NAME}-meili-data
