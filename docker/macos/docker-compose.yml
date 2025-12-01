@@ -1,6 +1,5 @@
 services:
     laravel:
-        platform: linux/x86_64
         container_name: ${APP_NAME}-laravel
         ports:
             - 9051:9051
@@ -12,7 +11,7 @@ services:
         volumes:
             - ../../:/var/www
             - 'laravel_storage:/var/www/storage'
-            - '/home/${HOST_USER}/.ssh:/home/laravel/.ssh'
+            - '~/.ssh:/home/laravel/.ssh'
             - ./supervisor.conf:/etc/supervisor.conf
         networks:
             - internal
@@ -44,26 +43,7 @@ services:
             - 'mysql-data:/var/lib/mysql'
         networks:
             - internal
-    meilisearch:
-        container_name: ${APP_NAME}-meilisearch
-        image: getmeili/meilisearch
-        volumes:
-            - meili-data:/meili_data
-        ports:
-            - 7700:7700
-        environment:
-            - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
-        networks:
-            - internal
-    mailhog:
-        container_name: ${APP_NAME}-mailhog
-        image: mailhog/mailhog
-        ports:
-            - 1025:1025
-            - 8025:8025
-        networks:
-            - internal
-        command: -invite-jim=1
+
 networks:
     internal:
         external: true
@@ -77,5 +57,3 @@ volumes:
         name: ${APP_NAME}-mysql-db
     laravel_storage:
         name: ${APP_NAME}-laravel_storage
-    meili-data:
-        name: ${APP_NAME}-meili-data

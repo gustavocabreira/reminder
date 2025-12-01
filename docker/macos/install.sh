@@ -1,70 +1,63 @@
 #!/bin/sh
+
 set -e
 
 echo "Starting..."
 
-APP_NAME='laravel'
+export USER_ID=${USER_ID:-$(id -u)}
+export USER_GROUP=${USER_GROUP:-$(id -g)}
+export HOST_USER=${HOST_USER:-$(whoami)}
 
-# parse flags
-OPTIONS=$(getopt -o n: --long app-name: -- "$@") || { echo "Incorrect options"; exit 1; }
-eval set -- "$OPTIONS"
-while true; do
-  case "$1" in
-    -n|--app-name) APP_NAME="$2"; shift 2 ;;
-    --) shift; break ;;
-    *) echo "Unknown option: $1"; exit 1 ;;
-  esac
-done
+export APP_NAME='laravel'
 
-# prepara .env local e injeta APP_NAME
-cp -f .env.example .env
-
-# compatibilidade sed (macOS vs GNU)
-if sed --version >/dev/null 2>&1; then
-  sed -i "s|app_name|$APP_NAME|g" .env
-else
-  sed -i '' "s|app_name|$APP_NAME|g" .env
+OPTIONS=$(getopt -o n: --long app-name: -- "$@")
+if [ $? -ne 0 ]; then
+    echo "Incorrect options provided"
+    exit 1
 fi
 
-# sobe tudo (rebuilda a imagem da app caso mude USER_ID/GROUP_ID)
+eval set -- "$OPTIONS"
+
+while true; do
+    case "$1" in
+        -n|--app-name) APP_NAME="$2"; shift 2 ;;
+        --) shift; break ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+done
+
+cp .env.example .env
+
+sed -i '' "s|app_name|$APP_NAME|g" .env
+
+./set_storage.sh
+
+# docker compose stop
 docker compose up -d --build
 
-# espera container da app ter /var/www/artisan
 counter=0
 while ! docker compose exec -T laravel test -f /var/www/artisan; do
-  echo "Waiting Laravel container: ${counter}s"
-  sleep 5; counter=$((counter+5))
+  echo "Waiting for Laravel container to be ready: ${counter}s"
+  sleep 5
+  counter=$((counter + 5))
 done
-echo "Laravel container is ready after $counter s."
+echo "Laravel container is ready after $counter seconds."
 
-# espera MySQL ficar pronto
 until docker compose logs mysql | grep -q "ready for connections"; do
-  echo "Waiting Database setup... ${counter}s"
-  sleep 5; counter=$((counter+5))
+    echo "Waiting Database setup...${counter}s"
+    sleep 5
+    counter=$((counter + 5))
 done
-echo "Database is ready after $counter s."
+echo "Database is ready to use after $counter seconds."
 
-# garante dirs e permissões DENTRO do container
-docker compose exec --user root -T laravel sh -lc '
-  set -e
-  mkdir -p /var/www/storage/logs /var/www/bootstrap/cache
-  chown -R $(id -u laravel):$(id -g laravel) /var/www/storage /var/www/bootstrap
-  chmod -R ug+rwX /var/www/storage /var/www/bootstrap
-'
-
-# copia .env para dentro da app
-docker compose cp .env laravel:/var/www/.env
-
-# instala deps e inicializa
-docker compose exec -T laravel composer update --no-interaction
-docker compose exec -T laravel php artisan key:generate --force
-docker compose exec -T laravel php artisan migrate --force
-docker compose exec -T laravel php artisan storage:link || true
-
-# npm é opcional; evite -it
-docker compose exec -T laravel sh -lc 'command -v npm >/dev/null && npm install && npm i chokidar || true'
-
-# reinicia para pegar tudo pronto
+docker compose cp .env laravel:/var/www/
+docker compose cp laravel:/var/www/.env .env
+docker compose exec -t laravel composer install
+docker compose exec -t laravel npm install
+docker compose exec -t laravel php artisan key:generate
+docker compose exec -it laravel php artisan migrate
+docker compose exec -it laravel npm i chokidar
+docker compose exec -it laravel php artisan storage:link
 docker compose restart laravel
 
 echo "Started!"
