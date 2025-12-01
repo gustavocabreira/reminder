@@ -67,5 +67,5 @@ COPY ./php.ini /usr/local/etc/php/conf.d/
 EXPOSE 9051
 USER laravel
 WORKDIR /var/www
-ENTRYPOINT [ "/usr/local/bin/laravel-install.sh" ]
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 CMD ["supervisord", "-c", "/etc/supervisor.conf"]
