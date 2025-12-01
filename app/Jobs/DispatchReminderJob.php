@@ -29,6 +29,7 @@ final class DispatchReminderJob implements ShouldQueue
         $this->reminder->update([
             'current_step' => 2,
             'is_notified' => true,
+            'notified_at' => now(),
         ]);
 
         // TODO: Send notification to user
