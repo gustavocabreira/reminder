@@ -19,6 +19,13 @@
         "vue": "^3.5.25"
     },
     "dependencies": {
+        "@huggydigital/hk-button": "^1.0.10",
+        "@huggydigital/hk-global": "^1.1.0",
+        "@huggydigital/hk-icons": "^1.0.7",
+        "@huggydigital/hk-popover": "^1.0.13",
+        "@huggydigital/hk-text": "^1.1.0",
+        "@huggydigital/hk-toast": "^1.1.2",
+        "@huggydigital/huggy-datepicker": "^2.0.15",
         "chokidar": "^4.0.3",
         "vue-router": "^4.6.3"
     }

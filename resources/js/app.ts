@@ -1,8 +1,8 @@
-import { createApp } from 'vue';
-import './bootstrap.js';
-import App from './App.vue';
-import router from './router/index.ts';
+import { createApp } from "vue";
+import "./bootstrap.js";
+import App from "./App.vue";
+import router from "./router/index.ts";
 
-createApp(App)
-    .use(router)
-    .mount('#app');
+import "@huggydigital/hk-global/index.css";
+
+createApp(App).use(router).mount("#app");
