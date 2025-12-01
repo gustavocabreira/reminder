@@ -31,5 +31,7 @@ it('should send the notification to the user', function () {
         'is_notified' => 1,
     ]);
 
-    Notification::assertSentTo($user, ReminderNotification::class);
+    Notification::assertSentTo($user, ReminderNotification::class, function (ReminderNotification $notification) use ($reminder) {
+        return $notification->reminder->id === $reminder->id;
+    });
 });
