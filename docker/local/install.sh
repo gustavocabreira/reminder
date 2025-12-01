@@ -57,6 +57,7 @@ docker compose cp .env laravel:/var/www/
 docker compose cp laravel:/var/www/.env .env
 docker compose exec -t laravel composer install
 docker compose exec -t laravel npm install
+docker compose exec -t laravel npm install typescript
 docker compose exec -t laravel php artisan key:generate
 docker compose exec -it laravel php artisan migrate
 docker compose exec -it laravel npm i chokidar
