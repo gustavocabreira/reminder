@@ -4,6 +4,7 @@ import App from "./App.vue";
 import router from "./router/index.ts";
 import { configureEcho } from "@laravel/echo-vue";
 
+import '@huggydigital/huggy-datepicker/index.css'
 import "@huggydigital/hk-global/index.css";
 
 const app = createApp(App);

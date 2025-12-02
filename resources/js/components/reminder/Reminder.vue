@@ -1,5 +1,11 @@
 <template>
-    <HPopover side="bottom" position="end" reposition-on-overflow>
+    <HPopover
+        side="bottom"
+        position="end"
+        reposition-on-overflow
+        :click-to-close="false"
+        :outside-click="false"
+    >
         <template #trigger>
             <HButton
                 icon-left="calendar"
@@ -32,7 +38,11 @@
                     />
                 </div>
 
-                <TaskForm v-if="showTaskForm" @cancel="toggleTaskForm" />
+                <TaskForm
+                    v-if="showTaskForm"
+                    @cancel="toggleTaskForm"
+                    @save="saveTask"
+                />
             </div>
         </template>
     </HPopover>
@@ -44,13 +54,17 @@ import { HPopover } from "@huggydigital/hk-popover";
 import Task from "../task/Task.vue";
 import ReminderHeader from "./ReminderHeader.vue";
 import ReminderFooter from "./ReminderFooter.vue";
-import TaskForm from "../task/TaskForm.vue";
+import TaskForm, { type FormData } from "../task/TaskForm.vue";
 import { ref } from "vue";
 
 const showTaskForm = ref<boolean>(false);
 
 function toggleTaskForm() {
     showTaskForm.value = !showTaskForm.value;
+}
+
+function saveTask(data: FormData) {
+    toggleTaskForm();
 }
 </script>
 

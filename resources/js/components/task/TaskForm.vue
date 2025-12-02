@@ -17,13 +17,30 @@
 
             <div style="display: flex; gap: 8px">
                 <HFormField label="Data">
-                    <HTextInput
-                        v-model="formData.date"
+                    <date-picker
+                        v-model:value="formData.date"
+                        type="date"
+                        valueType="YYYY-MM-DD"
+                        format="DD/MM/YY"
                         placeholder="00/00/00"
-                    />
+                        confirm-text="Aplicar"
+                        confirm
+                        :show-icon="true"
+                        @confirm="confirmDate"
+                    ></date-picker>
                 </HFormField>
                 <HFormField label="Hora">
-                    <HTextInput v-model="formData.time" placeholder="00:00" />
+                    <date-picker
+                        v-model:value="formData.time"
+                        type="time"
+                        valueType="HH:mm:ss"
+                        format="HH:mm"
+                        placeholder="00:00"
+                        confirm-text="Aplicar"
+                        confirm
+                        :show-icon="true"
+                        @confirm="confirmTime"
+                    ></date-picker>
                 </HFormField>
             </div>
 
@@ -60,7 +77,9 @@
 
         <div class="form-footer">
             <HButton level="tertiary" @click="cancel">Cancelar</HButton>
-            <HButton variant="success" @click="save">Salvar</HButton>
+            <HButton variant="success" :disabled="saveDisabled" @click="save">
+                Salvar
+            </HButton>
         </div>
     </div>
 </template>
@@ -72,8 +91,9 @@ import { HSelect, HSelectList } from "@huggydigital/hk-select-v2";
 import { HText } from "@huggydigital/hk-text";
 import { HTextInput } from "@huggydigital/hk-text-input";
 import { computed, onMounted, ref } from "vue";
+import DatePicker from "@huggydigital/huggy-datepicker";
 
-type FormData = {
+export type FormData = {
     title: string;
     date: string;
     time: string;
@@ -149,11 +169,33 @@ const selectedRemindAtOption = computed(() => {
     return found || null;
 });
 
+const saveDisabled = computed(() => {
+    return (
+        formData.value.title.trim() === "" ||
+        formData.value.date === "" ||
+        formData.value.time === "" ||
+        formData.value.contact === "" ||
+        formData.value.remindAt === undefined
+    );
+});
+
 onMounted(() => {
     inputTitleRef.value?.focus();
 });
 
-function save() {}
+function confirmDate(selectedDate: string) {
+    formData.value.date = selectedDate;
+}
+
+function confirmTime(selectedTime: string) {
+    formData.value.time = selectedTime;
+}
+
+function save() {
+    if (saveDisabled.value) return;
+
+    emit("save", formData.value);
+}
 
 function cancel() {
     formData.value = defaultFormData;
