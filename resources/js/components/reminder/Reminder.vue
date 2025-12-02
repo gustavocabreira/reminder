@@ -3,8 +3,7 @@
         side="bottom"
         position="end"
         reposition-on-overflow
-        :click-to-close="false"
-        :outside-click="false"
+        :outside-click="showPicker ? false : true"
     >
         <template #trigger>
             <HButton
@@ -21,7 +20,10 @@
                 :class="{ 'with-form': showTaskForm }"
             >
                 <div class="reminder">
-                    <ReminderHeader />
+                    <ReminderHeader
+                        @select-day="selectDay"
+                        @show-picker="(show) => (showPicker = show)"
+                    />
 
                     <ul class="tasks">
                         <Task
@@ -40,6 +42,7 @@
 
                 <TaskForm
                     v-if="showTaskForm"
+                    @show-picker="(show) => (showPicker = show)"
                     @cancel="toggleTaskForm"
                     @save="saveTask"
                 />
@@ -49,15 +52,21 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { HButton } from "@huggydigital/hk-button";
 import { HPopover } from "@huggydigital/hk-popover";
 import Task from "../task/Task.vue";
-import ReminderHeader from "./ReminderHeader.vue";
+import ReminderHeader, { type Day } from "./ReminderHeader.vue";
 import ReminderFooter from "./ReminderFooter.vue";
 import TaskForm, { type FormData } from "../task/TaskForm.vue";
-import { ref } from "vue";
 
+const selectedDay = ref<Day>("today");
 const showTaskForm = ref<boolean>(false);
+const showPicker = ref<boolean>(false);
+
+function selectDay(day: Day) {
+    selectedDay.value = day;
+}
 
 function toggleTaskForm() {
     showTaskForm.value = !showTaskForm.value;

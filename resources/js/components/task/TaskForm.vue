@@ -17,7 +17,7 @@
 
             <div style="display: flex; gap: 8px">
                 <HFormField label="Data">
-                    <date-picker
+                    <DatePicker
                         v-model:value="formData.date"
                         type="date"
                         valueType="YYYY-MM-DD"
@@ -27,10 +27,12 @@
                         confirm
                         :show-icon="true"
                         @confirm="confirmDate"
-                    ></date-picker>
+                        @open="openPicker"
+                        @close="closePicker"
+                    ></DatePicker>
                 </HFormField>
                 <HFormField label="Hora">
-                    <date-picker
+                    <DatePicker
                         v-model:value="formData.time"
                         type="time"
                         valueType="HH:mm:ss"
@@ -41,7 +43,9 @@
                         confirm
                         :show-icon="true"
                         @confirm="confirmTime"
-                    ></date-picker>
+                        @open="openPicker"
+                        @close="closePicker"
+                    ></DatePicker>
                 </HFormField>
             </div>
 
@@ -56,12 +60,7 @@
             <HFormField label="Lembrar em">
                 <HSelect
                     :selected="selectedRemindAtOption"
-                    :display-value="
-                        (option) => {
-                            console.log('option', option);
-                            return option.label;
-                        }
-                    "
+                    :display-value="(option) => option.label"
                     @select="(option) => (formData.remindAt = option.value)"
                     placeholder="Selecionar"
                     fill
@@ -109,6 +108,7 @@ type Props = {
 type Emits = {
     (e: "save", data: FormData): void;
     (e: "cancel"): void;
+    (e: "showPicker", show: boolean): void;
 };
 
 const defaultFormData: FormData = {
@@ -159,8 +159,8 @@ const remindAtOptions = [
 
 const timeLabels = {
     hour: "Hora",
-    minute: "Minuto"
-}
+    minute: "Minuto",
+};
 
 const emit = defineEmits<Emits>();
 
@@ -195,6 +195,14 @@ function confirmDate(selectedDate: string) {
 
 function confirmTime(selectedTime: string) {
     formData.value.time = selectedTime;
+}
+
+function openPicker() {
+    emit("showPicker", true);
+}
+
+function closePicker() {
+    emit("showPicker", false);
 }
 
 function save() {
