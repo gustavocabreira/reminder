@@ -37,6 +37,7 @@
                         format="HH:mm"
                         placeholder="00:00"
                         confirm-text="Aplicar"
+                        :time-labels="timeLabels"
                         confirm
                         :show-icon="true"
                         @confirm="confirmTime"
@@ -155,6 +156,11 @@ const remindAtOptions = [
         },
     },
 ];
+
+const timeLabels = {
+    hour: "Hora",
+    minute: "Minuto"
+}
 
 const emit = defineEmits<Emits>();
 
