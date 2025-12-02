@@ -19,7 +19,7 @@ final class StoreReminderRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'scheduled_at' => ['required', 'date'],
+            'scheduled_at' => ['required', 'date', 'after_or_equal:now'],
             'entity' => ['nullable', 'string', Rule::in(['chat', 'contact'])],
             'entity_id' => ['nullable', 'integer', 'required_with:entity'],
             'notify_before_minutes' => ['required', 'int'],

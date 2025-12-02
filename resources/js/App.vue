@@ -21,7 +21,13 @@ import { useEchoPublic } from "@laravel/echo-vue";
 useEchoPublic("company.1.user.1.reminders", ".reminder.notify", (e: any) => {
     Toast.show({
         title: "Atenção!",
-        description: e.title + " acontecerá em " + e.scheduled_at,
+        description: e.title + " acontecerá em " + (new Date(e.scheduled_at)).toLocaleString("pt-BR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+        }),
         canUndo: false,
         variant: "success",
         closable: false,
