@@ -18,9 +18,24 @@ final class ReminderController extends Controller
      */
     public function index()
     {
-        $reminders = Cache::remember('company:1:users:1:reminders', 60, function () {
-            return Reminder::query()->orderByDesc('scheduled_at')->get();
-        });
+        if (! request()->has('from') && ! request()->has('to') && ! request()->has('date')) {
+            $reminders = Cache::remember('company:1:users:1:reminders', 60, function () {
+                return Reminder::query()->orderByDesc('scheduled_at')->get();
+            });
+        } else {
+            $reminders = Reminder::query()
+                ->when(request()->has('from'), function ($query) {
+                    return $query->whereDate('scheduled_at', '>=', request('from'));
+                })
+                ->when(request()->has('to'), function ($query) {
+                    return $query->whereDate('scheduled_at', '<=', request('to'));
+                })
+                ->when(request()->has('date'), function ($query) {
+                    return $query->whereDate('scheduled_at', '=', request('date'));
+                })
+                ->orderByDesc('scheduled_at')
+                ->paginate(request()->get('per_page', 10));
+        }
 
         return ReminderResource::collection($reminders);
     }
