@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { HButton } from "@huggydigital/hk-button";
 import { HText } from "@huggydigital/hk-text";
-import Reminder from "./Reminder.vue";
+import Reminder from "./reminder/Reminder.vue";
 </script>
 
 <style scoped>
