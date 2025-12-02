@@ -1,57 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreReminderRequest;
-use App\Repository\ReminderRepository;
+use App\Http\Requests\Reminder\StoreReminderRequest;
+use App\Http\Requests\Reminder\UpdateReminderRequest;
+use App\Http\Resources\ReminderResource;
+use App\Models\Reminder;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReminderController extends Controller
+final class ReminderController extends Controller
 {
-    private $repository;
-
-    public function __construct(ReminderRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
+    /**
+     * Cria um lembrete
+     */
     public function index()
     {
-        return response()->json([
-            'data' => $this->repository->all()
-        ]);
+        $reminders = Reminder::query()->orderByDesc('scheduled_at')->get();
+
+        return ReminderResource::collection($reminders);
     }
 
-    public function store(StoreReminderRequest $request)
+    /**
+     * Armazena um lembrete
+     */
+    public function store(StoreReminderRequest $request): JsonResource
     {
-        $reminder = $this->repository->create($request->validated());
+        $reminder = Reminder::query()->create($request->only('title', 'scheduled_at', 'entity', 'entity_id', 'notify_at'));
 
-        return response()->json(['data' => $reminder], 201);
+        return new ReminderResource($reminder);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Mostra um lembrete
+     */
+    public function show(Reminder $reminder): JsonResource
     {
-        $reminder = $this->repository->find($id);
-
-        if (!$reminder) {
-            return response()->json(['message' => 'Reminder not found'], 404);
-        }
-
-        $reminder = $this->repository->update($reminder, $request->all());
-
-        return response()->json(['data' => $reminder]);
+        return new ReminderResource($reminder);
     }
 
-    public function destroy($id)
+
+    /**
+     * Atualiza um lembrete
+     */
+    public function update(Reminder $reminder, UpdateReminderRequest $request): JsonResource
     {
-        $reminder = $this->repository->find($id);
+        $reminder->update($request->only('title', 'scheduled_at', 'entity', 'entity_id', 'notify_at'));
 
-        if (!$reminder) {
-            return response()->json(['message' => 'Reminder not found'], 404);
-        }
+        return new ReminderResource($reminder);
+    }
 
-        $this->repository->delete($reminder);
+    /**
+     * Deleta um lembrete
+     */
+    public function destroy(Reminder $reminder)
+    {
+        $reminder->delete();
 
-        return response()->json(['message' => 'Reminder deleted'], 200);
+        return response()->noContent();
     }
 }

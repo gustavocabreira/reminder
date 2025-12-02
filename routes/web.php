@@ -7,17 +7,17 @@ use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', function() {
+Route::get('test', function () {
 
     $user = User::first();
 
-    if(!$user) {
+    if (! $user) {
         $user = User::factory()->create();
     }
 
     $reminder = Reminder::first();
 
-    if(!$reminder) {
+    if (! $reminder) {
         $reminder = Reminder::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -28,4 +28,4 @@ Route::get('test', function() {
 
 Route::get('/{any}', function () {
     return view('app');
-})->where('any', '.*');
+})->where('any', '^(?!docs/api).*$');

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Observers\ReminderObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy(ReminderObserver::class)]
 final class Reminder extends Model
 {
     /** @use HasFactory<\Database\Factories\ReminderFactory> */
@@ -30,7 +33,7 @@ final class Reminder extends Model
         'company_id' => 'integer',
         'user_id' => 'integer',
         'scheduled_at' => 'datetime',
-        'notify_at'    => 'datetime',
+        'notify_at' => 'datetime',
         'notified_at' => 'datetime',
         'is_notified' => 'boolean',
         'current_step' => 'integer',
