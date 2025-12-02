@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
+use App\Events\NotifyReminderEvent;
 use App\Jobs\DispatchReminderJob;
 use App\Models\Reminder;
 use App\Models\User;
 use App\Notifications\ReminderNotification;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 
 it('should send the notification to the user', function () {
     $this->freezeTime();
     Notification::fake();
+    Event::fake();
 
     $user = User::factory()->create();
     $reminder = Reminder::factory()->create([
@@ -33,5 +36,9 @@ it('should send the notification to the user', function () {
 
     Notification::assertSentTo($user, ReminderNotification::class, function (ReminderNotification $notification) use ($reminder) {
         return $notification->reminder->id === $reminder->id;
+    });
+
+    Event::assertDispatched(NotifyReminderEvent::class, function (NotifyReminderEvent $event) use ($reminder) {
+        return $event->reminder->id === $reminder->id;
     });
 });

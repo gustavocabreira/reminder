@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Events\NotifyReminderEvent;
 use App\Models\Reminder;
 use App\Notifications\ReminderNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +33,8 @@ final class DispatchReminderJob implements ShouldQueue
             'notified_at' => now(),
         ]);
 
-        // TODO: Send notification to user
         $this->reminder->user->notify(new ReminderNotification($this->reminder));
+
+        NotifyReminderEvent::dispatch($this->reminder);
     }
 }

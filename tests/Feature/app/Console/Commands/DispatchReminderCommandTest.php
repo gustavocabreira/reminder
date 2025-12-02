@@ -14,7 +14,8 @@ it('should dispatch the available reminders 10 minutes before the scheduled time
     $user = User::factory()->create();
     $reminder = Reminder::factory()->create([
         'user_id' => $user->id,
-        'scheduled_at' => now()->addMinutes(10),
+        'scheduled_at' => now(),
+        'notify_at' => now()->subMinutes(10),
     ]);
 
     $this->artisan('app:dispatch-reminder-command');

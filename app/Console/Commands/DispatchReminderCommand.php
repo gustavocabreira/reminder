@@ -32,7 +32,7 @@ final class DispatchReminderCommand extends Command
         Reminder::query()
             ->where('is_notified', false)
             ->where('current_step', 0)
-            ->where('scheduled_at', '<=', now()->addMinutes(10))
+            ->where('notify_at', '<=', now()->addMinutes(10))
             ->chunk(100, function ($reminders) {
                 $reminders->each(function ($reminder) {
                     $reminder->update([
