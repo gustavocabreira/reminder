@@ -19,8 +19,6 @@ final class IndexReminderRequest extends FormRequest
             'from' => ['sometimes', 'date'],
             'to' => ['sometimes', 'date'],
             'date' => ['sometimes', 'date'],
-            'page' => ['sometimes', 'integer'],
-            'per_page' => ['sometimes', 'integer'],
         ];
     }
 }

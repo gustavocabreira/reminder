@@ -34,7 +34,7 @@ final class ReminderController extends Controller
                     return $query->whereDate('scheduled_at', '=', request('date'));
                 })
                 ->orderByDesc('scheduled_at')
-                ->cursorPaginate(request()->get('per_page', 10));
+                ->cursorPaginate(10);
         }
 
         return ReminderResource::collection($reminders);
