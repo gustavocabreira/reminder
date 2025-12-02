@@ -40,7 +40,6 @@ final class ReminderController extends Controller
         return new ReminderResource($reminder);
     }
 
-
     /**
      * Atualiza um lembrete
      */
