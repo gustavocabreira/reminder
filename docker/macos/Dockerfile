@@ -64,6 +64,15 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/laravel-install.sh
 
 COPY ./php.ini /usr/local/etc/php/conf.d/
 
+RUN mkdir -p /var/www/storage/logs \
+    && mkdir -p /var/www/storage/framework/views \
+    && mkdir -p /var/www/storage/framework/cache \
+    && mkdir -p /var/www/storage/framework/sessions \
+    && chown -R laravel:laravel /var/www/storage \
+    && chmod -R 775 /var/www/storage
+
+USER laravel
+
 EXPOSE 9051
 USER laravel
 WORKDIR /var/www
