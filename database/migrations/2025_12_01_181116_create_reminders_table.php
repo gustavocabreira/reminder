@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->string('title');
             $table->datetime('scheduled_at');
+            $table->datetime('notify_at');
             $table->string('entity')->nullable();
             $table->string('entity_id')->nullable();
             $table->datetime('notified_at')->nullable();
