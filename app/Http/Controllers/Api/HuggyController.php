@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Http;
 
 class HuggyController extends Controller
 {
+    /**
+     * Buscar contatos
+     */
     public function getContacts(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -20,6 +23,9 @@ class HuggyController extends Controller
         ]);
     }
 
+    /**
+     * Buscar chats
+     */
     public function getChats(Request $request): JsonResponse
     {
         $user = $request->user();
