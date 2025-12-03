@@ -23,7 +23,7 @@ final class ReminderResource extends JsonResource
             'entity' => $this->entity,
             'entity_id' => $this->entity_id,
             'notify_at' => $this->notify_at,
-            'entity_data' => $this->entity_data,
+            'entity_data' => isset($this->entity_data) ? $this->entity_data : null,
         ];
     }
 }

@@ -37,6 +37,7 @@ final class Reminder extends Model
         'notified_at' => 'datetime',
         'is_notified' => 'boolean',
         'current_step' => 'integer',
+        'entity_id' => 'integer',
     ];
 
     public function user(): BelongsTo

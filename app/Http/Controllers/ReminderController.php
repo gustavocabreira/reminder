@@ -99,6 +99,17 @@ final class ReminderController extends Controller
      */
     public function show(Reminder $reminder): JsonResource
     {
+        if ($reminder->entity === 'contact') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/contacts/'.$reminder->entity_id);
+            $data = collect($response->json())->only('id', 'name')->toArray();
+            $data['id'] = (int) $data['id'];
+            $reminder->setAttribute('entity_data', $data);
+        } elseif ($reminder->entity === 'chat') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/chats/'.$reminder->entity_id);
+            $data = collect($response->json())->only(['id'])->toArray();
+            $reminder->setAttribute('entity_data', $data);
+        }
+
         return new ReminderResource($reminder);
     }
 
