@@ -44,6 +44,7 @@ final class User extends Authenticatable
         'token',
         'refresh_token',
         'expires_in',
+        'huggy_id',
     ];
 
     public function reminders(): HasMany

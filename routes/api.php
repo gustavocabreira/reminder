@@ -7,15 +7,11 @@ use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/me', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::apiResource('reminders', ReminderController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', function (Request $request) {
-        return $request->user();
+        return $request->user()->toResource();
     });
     Route::post('logout', [LoginController::class, 'logout']);
 });

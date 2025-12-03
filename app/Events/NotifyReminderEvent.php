@@ -7,6 +7,8 @@ namespace App\Events;
 use App\Models\Reminder;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -32,7 +34,7 @@ final class NotifyReminderEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel("company.{$this->reminder->company_id}.users.{$this->reminder->user_id}.reminders"),
+            new PrivateChannel("users.{$this->reminder->user_id}.reminders"),
         ];
     }
 
@@ -51,10 +53,9 @@ final class NotifyReminderEvent implements ShouldBroadcastNow
     {
         return [
             'id' => $this->reminder->id,
+            'user_id' => $this->reminder->user_id,
             'title' => $this->reminder->title,
             'scheduled_at' => $this->reminder->scheduled_at,
-            'user_id' => $this->reminder->user_id,
-            'company_id' => $this->reminder->company_id,
         ];
     }
 }
