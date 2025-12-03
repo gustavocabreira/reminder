@@ -15,7 +15,7 @@ final class HuggyController extends Controller
     {
         $user = $request->user();
         $endpoint = sprintf('%s/contacts', config('services.huggy.api_url'));
-        $response = Http::withHeader('Authorization', 'Bearer ' . $user)->get($endpoint, $request->all())->json();
+        $response = Http::withToken($user->token)->get($endpoint, $request->all())->json();
 
         return response()->json([
             'data' => $response,
@@ -26,7 +26,7 @@ final class HuggyController extends Controller
     {
         $user = $request->user();
         $endpoint = sprintf('%s/chats', config('services.huggy.api_url'));
-        $response = Http::withHeader('Authorization', 'Bearer ' . $user)->get($endpoint, $request->all())->json();
+        $response = Http::withToken($user->token)->get($endpoint, $request->all())->json();
 
         return response()->json([
             'data' => $response,
