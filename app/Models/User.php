@@ -25,6 +25,11 @@ final class User extends Authenticatable
         'name',
         'email',
         'password',
+        'huggy_id',
+        'avatar',
+        'token',
+        'refresh_token',
+        'expires_in',
     ];
 
     /**
@@ -35,6 +40,10 @@ final class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'huggy_id',
+        'token',
+        'refresh_token',
+        'expires_in',
     ];
 
     public function reminders(): HasMany

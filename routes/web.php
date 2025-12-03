@@ -3,9 +3,17 @@
 declare(strict_types=1);
 
 use App\Events\NotifyReminderEvent;
+use App\Http\Controllers\Auth\LoginController;
 use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('auth/{provider}')
+    ->whereIn('provider', ['huggy'])
+    ->group(function () {
+        Route::get('redirect', [LoginController::class, 'redirectToProvider'])->name('auth.redirect');
+        Route::get('callback', [LoginController::class, 'callback'])->name('auth.callback');
+    });
 
 Route::get('test', function () {
 

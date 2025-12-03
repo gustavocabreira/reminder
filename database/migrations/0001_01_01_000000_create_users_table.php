@@ -18,7 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->integer('huggy_id')->nullable();
+            $table->string('avatar')->nullable();
+            $table->longText('token')->nullable();
+            $table->longText('refresh_token')->nullable();
+            $table->integer('expires_in')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
