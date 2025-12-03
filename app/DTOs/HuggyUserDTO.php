@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs;
 
-class HuggyUserDTO
+final class HuggyUserDTO
 {
     private $id;
 

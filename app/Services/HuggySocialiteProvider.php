@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
 
-class HuggySocialiteProvider extends AbstractProvider implements ProviderInterface
+final class HuggySocialiteProvider extends AbstractProvider implements ProviderInterface
 {
     public function getScopes()
     {

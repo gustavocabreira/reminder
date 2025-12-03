@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Auth;
 
 use App\DTOs\HuggyUserDTO;
@@ -7,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-class LoginAction
+final class LoginAction
 {
     public function execute($request): array
     {

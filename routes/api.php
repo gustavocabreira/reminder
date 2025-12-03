@@ -14,7 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', function (Request $request) {
         return $request->user()->toResource();
     });
-   
+
     Route::post('logout', [LoginController::class, 'logout']);
 
     Route::prefix('huggy')->group(function () {

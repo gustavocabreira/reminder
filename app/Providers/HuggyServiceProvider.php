@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Services\HuggySocialiteProvider;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Contracts\Factory as Socialite;
 
-class HuggyServiceProvider extends ServiceProvider
+final class HuggyServiceProvider extends ServiceProvider
 {
     public function boot()
     {
