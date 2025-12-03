@@ -33,7 +33,7 @@ final class HuggySocialiteProvider extends AbstractProvider implements ProviderI
             ],
         ]);
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     protected function mapUserToObject(array $user)
