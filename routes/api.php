@@ -8,14 +8,14 @@ use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('reminders', ReminderController::class);
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', function (Request $request) {
         return $request->user()->toResource();
     });
 
     Route::post('logout', [LoginController::class, 'logout']);
+
+    Route::apiResource('reminders', ReminderController::class);
 
     Route::prefix('huggy')->group(function () {
         Route::get('contacts', [HuggyController::class, 'getContacts']);

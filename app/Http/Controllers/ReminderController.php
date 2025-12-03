@@ -8,8 +8,10 @@ use App\Http\Requests\Reminder\StoreReminderRequest;
 use App\Http\Requests\Reminder\UpdateReminderRequest;
 use App\Http\Resources\ReminderResource;
 use App\Models\Reminder;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 final class ReminderController extends Controller
 {
@@ -36,6 +38,47 @@ final class ReminderController extends Controller
                 ->orderByDesc('scheduled_at')
                 ->cursorPaginate(10);
         }
+
+        $array = $reminders
+            ->filter(fn ($reminder) => ! is_null($reminder->entity))
+            ->groupBy('entity')
+            ->map(fn ($group) => $group->pluck('entity_id')->toArray())
+            ->toArray();
+
+        $responses = Http::pool(fn (Pool $pool) => [
+            $pool->withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/contacts', [
+                'query' => [
+                    'ids' => array_values($array['contact']),
+                ],
+            ]),
+            $pool->withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/chats', [
+                'query' => [
+                    'ids' => array_values($array['chat']),
+                ],
+            ]),
+        ]);
+
+        $contacts = $responses[0]->json();
+        $chats = $responses[1]->json();
+
+        $contactsById = collect($contacts)->map(fn ($item) => ['id' => (int) $item['id'], 'name' => $item['name']])->keyBy('id');
+        $chatsById = collect($chats)->map(fn ($item) => ['id' => (int) $item['id']])->keyBy('id');
+
+        $reminders = $reminders->map(function ($reminder) use ($contactsById, $chatsById) {
+            $data = null;
+
+            if ($reminder->entity === 'contact') {
+                $data = $contactsById->get($reminder->entity_id);
+            }
+
+            if ($reminder->entity === 'chat') {
+                $data = $chatsById->get($reminder->entity_id);
+            }
+
+            $reminder->setAttribute('entity_data', $data);
+
+            return $reminder;
+        });
 
         return ReminderResource::collection($reminders);
     }
