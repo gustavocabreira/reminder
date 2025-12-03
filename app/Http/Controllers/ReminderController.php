@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 final class ReminderController extends Controller
 {
     /**
-     * Cria um lembrete
+     * Listar lembretes
      */
     public function index()
     {
