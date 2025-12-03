@@ -27,5 +27,5 @@ Route::get('test', function () {
 });
 
 Route::get('/{any}', function () {
-    return view('app');
+    return view('welcome');
 })->where('any', '^(?!docs/api).*$');

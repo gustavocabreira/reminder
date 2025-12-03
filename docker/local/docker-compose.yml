@@ -3,7 +3,6 @@ services:
         container_name: ${APP_NAME}-laravel
         ports:
             - 9051:9051
-            - 5173:5173
             - 8080:8080
         build:
             context: .
@@ -17,6 +16,7 @@ services:
             - ./supervisor.conf:/etc/supervisor.conf
         networks:
             - internal
+            - spa
     redis:
         container_name: ${APP_NAME}-redis
         image: redis:latest
@@ -55,6 +55,9 @@ services:
         command: -invite-jim=1
 networks:
     internal:
+        external: true
+    spa:
+        external: true
 
 volumes:
     redis-data:

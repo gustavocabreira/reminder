@@ -32,7 +32,7 @@ final class NotifyReminderEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel("company.{$this->reminder->company_id}.user.{$this->reminder->user_id}.reminders"),
+            new Channel("company.{$this->reminder->company_id}.users.{$this->reminder->user_id}.reminders"),
         ];
     }
 
