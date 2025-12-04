@@ -52,7 +52,6 @@ services:
             - 8025:8025
         networks:
             - internal
-        command: -invite-jim=1
 networks:
     internal:
         external: true
