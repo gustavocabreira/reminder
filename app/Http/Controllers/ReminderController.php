@@ -30,7 +30,8 @@ final class ReminderController extends Controller
             ->when(request()->has('date'), function ($query) {
                 return $query->whereDate('scheduled_at', '=', request('date'));
             })
-            ->orderBy('scheduled_at')
+            ->orderByRaw('notified_at IS NULL DESC')
+            ->orderBy('scheduled_at', 'asc')
             ->cursorPaginate(10);
 
         $array = $reminders

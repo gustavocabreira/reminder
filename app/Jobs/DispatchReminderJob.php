@@ -44,7 +44,7 @@ final class DispatchReminderJob implements ShouldQueue
             $data = collect($response->json())->only('id', 'name')->toArray();
             $data['id'] = (int) $data['id'];
             $this->reminder->setAttribute('entity_data', $data);
-        } else if ($this->reminder->entity === 'chat') {
+        } elseif ($this->reminder->entity === 'chat') {
             $response = Http::withToken($user->token)->get(config('services.huggy.api_url').'/chats/'.$this->reminder->entity_id);
             $data = collect($response->json())->only('id', 'name')->toArray();
             $data['id'] = (int) $data['id'];
