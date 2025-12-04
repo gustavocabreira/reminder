@@ -99,6 +99,18 @@ final class ReminderController extends Controller
     public function store(StoreReminderRequest $request): JsonResource
     {
         $reminder = Reminder::query()->create($request->only('title', 'scheduled_at', 'entity', 'entity_id', 'notify_at'));
+
+        if ($reminder->entity === 'contact') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/contacts/'.$reminder->entity_id);
+            $data = collect($response->json())->only('id', 'name')->toArray();
+            $data['id'] = (int) $data['id'];
+            $reminder->setAttribute('entity_data', $data);
+        } elseif ($reminder->entity === 'chat') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/chats/'.$reminder->entity_id);
+            $data = collect($response->json())->only(['id'])->toArray();
+            $reminder->setAttribute('entity_data', $data);
+        }
+
         Cache::forget('company:1:users:1:reminders');
 
         return new ReminderResource($reminder);
@@ -130,6 +142,17 @@ final class ReminderController extends Controller
     {
         $reminder->update($request->only('title', 'scheduled_at', 'entity', 'entity_id', 'notify_at'));
         Cache::forget('company:1:users:1:reminders');
+
+        if ($reminder->entity === 'contact') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/contacts/'.$reminder->entity_id);
+            $data = collect($response->json())->only('id', 'name')->toArray();
+            $data['id'] = (int) $data['id'];
+            $reminder->setAttribute('entity_data', $data);
+        } elseif ($reminder->entity === 'chat') {
+            $response = Http::withToken(auth()->user()->token)->get(config('services.huggy.api_url').'/chats/'.$reminder->entity_id);
+            $data = collect($response->json())->only(['id'])->toArray();
+            $reminder->setAttribute('entity_data', $data);
+        }
 
         return new ReminderResource($reminder);
     }
