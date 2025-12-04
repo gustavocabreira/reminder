@@ -59,6 +59,7 @@ final class NotifyReminderEvent implements ShouldBroadcastNow
             'entity_id' => $this->reminder->entity_id,
             'notify_at' => $this->reminder->notify_at,
             'entity_data' => isset($this->reminder->entity_data) ? $this->reminder->entity_data : null,
+            'is_notified' => true,
         ];
     }
 }
