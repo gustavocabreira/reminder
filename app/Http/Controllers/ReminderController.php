@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Reminder\IndexReminderRequest;
 use App\Http\Requests\Reminder\StoreReminderRequest;
 use App\Http\Requests\Reminder\UpdateReminderRequest;
 use App\Http\Resources\ReminderResource;
@@ -17,9 +18,8 @@ final class ReminderController extends Controller
     /**
      * Listar lembretes
      */
-    public function index()
+    public function index(IndexReminderRequest $request)
     {
-
         $reminders = Reminder::query()
             ->when(request()->has('from'), function ($query) {
                 return $query->whereDate('scheduled_at', '>=', request('from'));
@@ -30,7 +30,7 @@ final class ReminderController extends Controller
             ->when(request()->has('date'), function ($query) {
                 return $query->whereDate('scheduled_at', '=', request('date'));
             })
-            ->orderByDesc('scheduled_at')
+            ->orderBy('scheduled_at')
             ->cursorPaginate(10);
 
         $array = $reminders
@@ -77,7 +77,20 @@ final class ReminderController extends Controller
             return $reminder;
         });
 
+        if (request()->has('groupBy') && request()->groupBy === 'day') {
+            $collection = ReminderResource::collection($reminders);
+
+            $grouped = collect($collection->collection)
+                ->groupBy(fn ($r) => $r->scheduled_at->format('Y-m-d'))
+                ->sortKeys();
+
+            $collection->collection = $grouped;
+
+            return $collection;
+        }
+
         return ReminderResource::collection($reminders);
+
     }
 
     /**
