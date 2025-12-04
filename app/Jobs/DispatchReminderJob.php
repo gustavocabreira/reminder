@@ -6,9 +6,11 @@ namespace App\Jobs;
 
 use App\Events\NotifyReminderEvent;
 use App\Models\Reminder;
+use App\Models\User;
 use App\Notifications\ReminderNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Http;
 
 final class DispatchReminderJob implements ShouldQueue
 {
@@ -34,6 +36,20 @@ final class DispatchReminderJob implements ShouldQueue
         ]);
 
         $this->reminder->user->notify(new ReminderNotification($this->reminder));
+
+        $user = User::find($this->reminder->user_id);
+
+        if ($this->reminder->entity === 'contact') {
+            $response = Http::withToken($user->token)->get(config('services.huggy.api_url').'/contacts/'.$this->reminder->entity_id);
+            $data = collect($response->json())->only('id', 'name')->toArray();
+            $data['id'] = (int) $data['id'];
+            $this->reminder->setAttribute('entity_data', $data);
+        } else if ($this->reminder->entity === 'chat') {
+            $response = Http::withToken($user->token)->get(config('services.huggy.api_url').'/chats/'.$this->reminder->entity_id);
+            $data = collect($response->json())->only('id', 'name')->toArray();
+            $data['id'] = (int) $data['id'];
+            $this->reminder->setAttribute('entity_data', $data);
+        }
 
         NotifyReminderEvent::dispatch($this->reminder);
     }
